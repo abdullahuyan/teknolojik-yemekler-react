@@ -1,33 +1,86 @@
+import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { Button, Card, CardBody, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
-function OrderPage() {
-  const [formData, setFormData] = useState({
+function OrderPage({setForm}) {
+  const initialFormData = {
     name: '',
     hamur: '',
     extra: [],
     note: '',
-    miktar: 1
-  });
-  const miktar = 1;
+    miktar: 1,
+    boyut:''
+  };
+  const [formData, setFormData] = useState(initialFormData);
   const tutar = 85.5;
   const secimler = formData.extra.length*5;
-  const topTutar = tutar+ secimler;
-    const malzemeler =["Pepperoni", "Sosis", "Kanada Jambonu", "Tavuk Izgara", "Soğan", "Domates", "Mısır", "Sucuk", "Jalepeno", "Sarımsak", "Biber", "Zeytin", "Ananas", "Kabak"
-    ]
+  const topTutar = (tutar+ secimler)*formData.miktar;
+  const malzemeler =["Pepperoni", "Sosis", "Kanada Jambonu", 
+                     "Tavuk Izgara", "Soğan", "Domates", 
+                     "Mısır", "Sucuk", "Jalepeno", "Sarımsak", 
+                     "Biber", "Zeytin", "Ananas", "Kabak"]
+  const artır = () => {
+  setFormData({ ...formData, miktar: formData.miktar + 1 });
+  };
 
-    return (
-      <Container>
+  const azalt = () => {
+  if (formData.miktar > 1) {
+    setFormData({ ...formData, miktar: formData.miktar - 1 });
+    }
+  };
+
+  const isValid = formData.name.trim().length >= 3 &&
+                formData.boyut &&
+                formData.hamur &&
+                formData.extra.length >= 4 &&
+                formData.extra.length <= 10;
+
+  const handleChange = (event) => {
+  const { name, value, type, checked } = event.target;
+
+  if (type === 'checkbox') {
+    if (checked) {
+      setFormData({ ...formData, [name]: [...formData.extra, value] });
+      } else {
+        setFormData({ ...formData, [name]: formData.extra.filter(item => item !== value) });
+        }
+    } else {
+      setFormData({ ...formData, [name]: value });
+      }
+  };
+
+  const history = useHistory();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!isValid) return;
+    axios.post("https://reqres.in/api/pizza", formData, {
+      headers: {
+        "x-api-key": "reqres-free-v1"
+      }
+    })
+    .then(res => {
+      setForm(res.data);
+      history.push("/success"); 
+
+    })
+    .catch(err => console.error(err));
+
+  };
+
+  return (
+    <Container>
       <div className="header-link">
-      <Link to="/"exact className="text-decoration-none text-white" >
+      <Link to="/" className="text-decoration-none text-white" >
         <strong>Anasayfa</strong> 
       </Link> {" - "}
-      <Link to="/orderpage"exact className="text-decoration-none text-white">
+      <Link to="/orderpage" className="text-decoration-none text-white">
         Sipariş Oluştur
       </Link> 
       </div>
-      <Form >
+      <Form onSubmit={handleSubmit}>
          <h4>Positon Absolute Acı Pizza</h4>
          <div className="food-price">
             <span className="item-price"><strong>{tutar}₺</strong></span>
@@ -40,15 +93,15 @@ function OrderPage() {
          <FormGroup tag="fieldset">
          <legend>Boyut Seç <span style={{color: "red"}}>*</span></legend>
          <FormGroup >
-           <Input type="radio" id="Küçük" name="boyut" value="Küçük"/>
+           <Input type="radio" id="Küçük" name="boyut" value="Küçük" onChange={handleChange}/>
            <Label htmlFor="Küçük">Küçük</Label>
          </FormGroup>
          <FormGroup >
-         <Input type="radio" id="Orta" name="boyut" value="Orta"/>
+         <Input type="radio" id="Orta" name="boyut" value="Orta" onChange={handleChange}/>
            <Label htmlFor="Orta">Orta</Label>
          </FormGroup>
          <FormGroup >
-         <Input type="radio" id="Büyük" name="boyut" value="Büyük"/>
+         <Input type="radio" id="Büyük" name="boyut" value="Büyük" onChange={handleChange}/>
            <Label htmlFor="Büyük">Büyük</Label>
          </FormGroup>
          </FormGroup>
@@ -56,8 +109,8 @@ function OrderPage() {
          <div className="hamur">
          <FormGroup>
          <legend>Hamur Seç <span style={{color: "red"}}>*</span></legend>
-          <Input type="select" name="hamur">
-            <option>--Hamur Kalınlığı--</option>
+          <Input type="select" name="hamur" onChange={handleChange}>
+            <option value="">--Hamur Kalınlığı--</option>
             <option value="İnce">İnce</option>
             <option value="Orta">Orta</option>
             <option value="Kalın">Kalın</option>
@@ -72,7 +125,7 @@ function OrderPage() {
             <Col md={4} key={i}>
               <FormGroup check >
                 <Input
-                  type="checkbox" name="extra" id={item}
+                  type="checkbox" name="extra" id={item} value ={item} onChange={handleChange}
                 />
                 <Label htmlFor={item}>{item}</Label>
               </FormGroup>
@@ -87,6 +140,7 @@ function OrderPage() {
              name="name"
              placeholder="Adınızı Giriniz"
              type="text"
+             onChange={handleChange}
            />
         </FormGroup>
         <FormGroup>
@@ -98,18 +152,19 @@ function OrderPage() {
              name="note"
              type="textarea"
              placeholder="Siparişinize eklemek istediğiniz bir not var mı?"
+             onChange={handleChange}
            />
         </FormGroup>
         <div className="siparis">
         <Row className="miktar">
           <Col md="2">
-            <Button color="warning">-</Button>
+            <Button color="warning" onClick={azalt}>-</Button>
           </Col>
           <Col md="2">
-            <strong>{miktar}</strong>
+            <strong>{formData.miktar}</strong>
           </Col>
           <Col md="2">
-            <Button color="warning">+</Button>
+            <Button color="warning" onClick={artır}>+</Button>
           </Col>
         </Row>
         <Card >
@@ -120,10 +175,10 @@ function OrderPage() {
           </CardBody>
         </Card>
         </div>
-        <Button color="warning">SİPARİŞ VER</Button>
+        <Button color="warning" disabled={!isValid} type="submit">SİPARİŞ VER</Button>
       </Form>
-      </Container>
-    )
-  }
+    </Container>  
+  )
+}
   
 export default OrderPage;

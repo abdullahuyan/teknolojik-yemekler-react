@@ -7,21 +7,21 @@ import Footer from './components/Footer';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
+import { useState } from 'react';
 
 function App() {
-
+  const [form, setForm] = useState(null);
   return (
     <Router>
       <Header />
       <Switch>
-        <Route path="/orderpage">
-          <OrderPage/>
+        <Route path="/orderpage" >
+          <OrderPage setForm={setForm}/>
         </Route>
-        <Route path="/success">
-          <Success/>
+        <Route path="/success" >
+          <Success form={form}/>
         </Route>
         <Route path="/" exact>
           <Home/>
