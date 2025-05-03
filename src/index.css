@@ -112,12 +112,21 @@ form {
   text-align: center;
 }
 
-.success-card{
-  width: "250px";
-  margin: "30px auto";
-  border: "1px solid white";
+.sonuc .success-card{
+  width: 250px;
+  margin: 30px auto;
+  border: 1px solid white;
   background-color: var(--color-kirmizi);
-  color: "white";
+  color: white;
+}
+.ozet{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 200px;
+  line-height: 20px;
+  font-weight: 100;
+  margin-top: 20px;
 }
 
 .nav-items nav {

@@ -12,11 +12,10 @@ function Success({form}) {
   return (
     <div className="sonuc"> 
       <p className="head-text1">lezzetin yolda</p>
-      <h2 className="sonuc-text">SİPARİŞ ALINDI</h2>
+      <h2 className="head-text2">SİPARİŞ ALINDI</h2>
       <hr/>
       <h4><strong>Position Absolute Acı Pizza ({miktar} adet)</strong></h4>
-      <div>
-        <p></p>
+      <div className="ozet">
         <p>İsim: <strong>{name}</strong></p>
         <p>Sipariş Notu: <strong>{note}</strong></p>
         <p>Boyut: <strong>{boyut}</strong></p>
