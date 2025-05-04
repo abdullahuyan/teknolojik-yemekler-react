@@ -42,8 +42,22 @@ form {
   align-items: flex-start;
 }
 .miktar {
-  display: block;
+  display: flex;
   
+}
+
+.buton-miktar {
+  border: 1px solid lightgray;
+  padding: 12px;
+  border-radius: 5px;
+}
+
+.siparis-toplami{
+  display: flex;
+  flex-direction: column;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 16px;
 }
 
 .header-section {
@@ -293,7 +307,7 @@ main{
   margin-top: 1px;
   padding: 2rem;
  }
-@media (max-width:500px){
+@media (max-width:768px){
 
   body{
     min-width: 350px;
@@ -302,6 +316,9 @@ main{
   }
   .head-text1{
     display: none;
+  }
+  .head-text2{
+    font-size: 3rem;
   }
   .nav-items nav {
      flex-wrap: wrap;

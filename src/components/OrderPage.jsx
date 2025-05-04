@@ -64,7 +64,7 @@ function OrderPage({setForm}) {
     .then(res => {
       setForm(res.data);
       history.push("/success"); 
-
+      setFormData(initialFormData);
     })
     .catch(err => console.error(err.message));
 
@@ -195,26 +195,17 @@ function OrderPage({setForm}) {
            />
         </FormGroup>
       <div className="siparis">
-        <Row className="miktar">
-          <Col md="2">
-            <Button color="warning" onClick={azalt}>-</Button>
-          </Col>
-          <Col md="2" >
-            <strong>{formData.miktar}</strong>
-          </Col>
-          <Col md="2">
-            <Button color="warning" onClick={artır}>+</Button>
-          </Col>
-        </Row>
-        <Card >
-          <CardBody >
+        <div className="miktar">
+            <Button color="warning" onClick={azalt}>-</Button>          
+            <strong className="buton-miktar">{formData.miktar}</strong>        
+            <Button color="warning" onClick={artır}>+</Button>         
+        </div>
+        <div className="siparis-toplami">
             <h5>Sipariş Toplamı</h5>
-            <p style={{display: "flex",
-            justifyContent: "space-between"}}>Seçimler: {secimler}₺</p>
+            <p>Seçimler: {secimler}₺</p>
             <p><strong>Toplam: {topTutar}₺</strong></p>
             <Button color="warning" disabled={!isValid} type="submit">SİPARİŞ VER</Button>
-          </CardBody>
-        </Card>
+        </div>
         </div> 
       </Form>
     </Container>  
